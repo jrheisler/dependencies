@@ -1,0 +1,159 @@
+{
+  "lib/common/adaptive_dialog.dart": [],
+  "lib/common/constants.dart": [],
+  "lib/common/load_file_in_browser.dart": [],
+  "lib/common/my_bottom_sheet.dart": [],
+  "lib/common/sign_out.dart": [],
+  "lib/common_widgets/adaptive_dialog.dart": [],
+  "lib/common_widgets/animated_image.dart": [],
+  "lib/common_widgets/confirm_delete.dart": [],
+  "lib/common_widgets/fade_image.dart": [],
+  "lib/common_widgets/loader.dart": [],
+  "lib/common_widgets/my_buttons.dart": [],
+  "lib/common_widgets/my_container.dart": [
+    "../common/constants.dart"
+  ],
+  "lib/common_widgets/my_snackbar.dart": [],
+  "lib/common_widgets/my_vertical_scrollbar.dart": [
+    "../views/script_view/script_view_controller.dart"
+  ],
+  "lib/common_widgets/my_web_share.dart": [],
+  "lib/common_widgets/number_pick_dialog.dart": [
+    "../views/script_view/script_view_controller.dart",
+    "my_buttons.dart"
+  ],
+  "lib/common_widgets/zoomable_image.dart": [],
+  "lib/firebase_options.dart": [],
+  "lib/main.dart": [
+    "firebase_options.dart"
+  ],
+  "lib/models/client_server.dart": [],
+  "lib/models/element_items.dart": [],
+  "lib/models/element_scripts.dart": [],
+  "lib/models/globals.dart": [],
+  "lib/models/license_items.dart": [],
+  "lib/models/script.dart": [
+    "element_items.dart"
+  ],
+  "lib/models/script_activity.dart": [],
+  "lib/models/script_library.dart": [
+    "element_scripts.dart"
+  ],
+  "lib/service/api.dart": [],
+  "lib/service/auth.dart": [
+    "data_controller.dart",
+    "local_storage_helper.dart"
+  ],
+  "lib/service/data_controller.dart": [
+    "auth.dart"
+  ],
+  "lib/service/git_services.dart": [
+    "auth.dart"
+  ],
+  "lib/service/google_api.dart": [],
+  "lib/service/load_image.dart": [
+    "git_services.dart"
+  ],
+  "lib/service/local_storage_helper.dart": [],
+  "lib/service/session_storage_helper.dart": [],
+  "lib/temp/temp.dart": [],
+  "lib/views/coming_soon/coming_soon_view.dart": [],
+  "lib/views/home/clock_it.dart": [
+    "../../common/constants.dart"
+  ],
+  "lib/views/home/login_screen.dart": [],
+  "lib/views/home/sign_in_page.dart": [
+    "../../common/load_file_in_browser.dart",
+    "../../common_widgets/my_web_share.dart",
+    "../../service/local_storage_helper.dart",
+    "../library/public_view.dart",
+    "../script_view/script_view.dart",
+    "clock_it.dart",
+    "login_screen.dart"
+  ],
+  "lib/views/library/add_edit_note.dart": [
+    "../../service/auth.dart"
+  ],
+  "lib/views/library/element_scripts_add_edit.dart": [],
+  "lib/views/library/library_add_edit.dart": [],
+  "lib/views/library/library_view.dart": [
+    "../script_view/script_view.dart",
+    "library_view_controller.dart"
+  ],
+  "lib/views/library/library_view_controller.dart": [],
+  "lib/views/library/private_element_scripts_add_edit.dart": [],
+  "lib/views/library/private_library_view_controller.dart": [],
+  "lib/views/library/private_view.dart": [],
+  "lib/views/library/public_view.dart": [
+    "library_add_edit.dart"
+  ],
+  "lib/views/library/send_to_mail.dart": [],
+  "lib/views/library/test.dart": [],
+  "lib/views/nav_rail/current_screen.dart": [],
+  "lib/views/nav_rail/nav_rail_controller.dart": [
+    "../script_view/script_view_controller.dart"
+  ],
+  "lib/views/nav_rail/nav_rail_view_screen.dart": [
+    "../library/public_view.dart",
+    "../script_view/script_view.dart",
+    "nav_rail_controller.dart"
+  ],
+  "lib/views/panels/mp4_video.dart": [
+    "../../service/local_storage_helper.dart"
+  ],
+  "lib/views/panels/panel_five.dart": [],
+  "lib/views/panels/panel_five_a.dart": [],
+  "lib/views/panels/panel_four.dart": [],
+  "lib/views/panels/panel_one.dart": [],
+  "lib/views/panels/panel_seven.dart": [],
+  "lib/views/panels/panel_six.dart": [],
+  "lib/views/panels/panel_three.dart": [],
+  "lib/views/panels/panel_two.dart": [],
+  "lib/views/panels/panel_videoOne.dart": [],
+  "lib/views/script_view/backstage_screen.dart": [
+    "../../service/api.dart",
+    "../../service/auth.dart"
+  ],
+  "lib/views/script_view/back_drop_screen.dart": [
+    "../../common_widgets/animated_image.dart",
+    "../../common_widgets/fade_image.dart",
+    "../../common_widgets/zoomable_image.dart",
+    "../../service/load_image.dart",
+    "../../service/local_storage_helper.dart",
+    "../panels/mp4_video.dart",
+    "../panels/panel_videoOne.dart"
+  ],
+  "lib/views/script_view/play_audio.dart": [
+    "../../service/local_storage_helper.dart"
+  ],
+  "lib/views/script_view/script_view.dart": [
+    "../../common/sign_out.dart",
+    "../home/sign_in_page.dart",
+    "../user/add_edit_user_screen.dart",
+    "script_view_controller.dart",
+    "script_view_tile.dart"
+  ],
+  "lib/views/script_view/script_view_controller.dart": [
+    "../library/add_edit_note.dart",
+    "../nav_rail/nav_rail_controller.dart",
+    "backstage_screen.dart"
+  ],
+  "lib/views/script_view/script_view_tile.dart": [
+    "../../service/git_services.dart",
+    "../../service/load_image.dart",
+    "../../service/local_storage_helper.dart",
+    "../panels/mp4_video.dart",
+    "../panels/panel_videoOne.dart",
+    "script_view_controller.dart",
+    "../library/add_edit_note.dart"
+  ],
+  "lib/views/user/add_edit_license.dart": [
+    "license_items_view.dart"
+  ],
+  "lib/views/user/add_edit_user_screen.dart": [
+    "license_items_view.dart"
+  ],
+  "lib/views/user/license_items_view.dart": [
+    "add_edit_license.dart"
+  ]
+}

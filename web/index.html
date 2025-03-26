@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dart Dependency Graph</title>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+      background-color: #121212;
+      color: white;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background-color: #1e1e1e;
+      padding: 1rem;
+      text-align: center;
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.1);
+    }
+
+    #fileInput {
+      margin-top: 0.5rem;
+    }
+
+    #stats {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: #aaa;
+    }
+
+    #network {
+      flex: 1;
+      min-height: 0;
+      background-color: #1e1e1e;
+    }
+
+    #overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: rgba(0, 0, 0, 0.7);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .spinner {
+      border: 8px solid #444;
+      border-top: 8px solid #8b5cf6;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 1rem;
+    }
+
+    .progress-text {
+      font-size: 1.2rem;
+      text-align: center;
+    }
+
+    @keyframes spin {
+      0%   { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+  <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+</head>
+<body>
+  <header>
+    <h1>📦 Dart Dependency Graph</h1>
+    <input type="file" id="fileInput" accept=".json" />
+    <div id="stats"></div>
+  </header>
+
+  <div id="network"></div>
+
+  <div id="overlay">
+    <div class="spinner"></div>
+    <div class="progress-text" id="progressText">Loading graph...</div>
+  </div>
+
+  <script>
+    const fileInput = document.getElementById('fileInput');
+    const overlay = document.getElementById('overlay');
+    overlay.style.display = "none"; // force hide on page load
+    const progressText = document.getElementById('progressText');
+    const statsDiv = document.getElementById('stats');
+
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = e => {
+        try {
+          const json = JSON.parse(e.target.result);
+          overlay.style.display = "flex";
+          progressText.textContent = "Analyzing...";
+          requestAnimationFrame(() => drawGraph(json));
+        } catch (err) {
+          alert("❌ Failed to parse JSON.");
+          console.error(err);
+        }
+      };
+      reader.readAsText(file);
+    });
+
+    function normalize(path) {
+      return path
+        .replace(/\\/g, "/")
+        .replace(/^\.{1,2}\//, "lib/")
+        .replace(/^\.\.\/lib\//, "lib/")
+        .replace(/^lib\//, "")
+        .replace(/^\/?/, "lib/");
+    }
+
+    function drawGraph(data) {
+      const nodes = new Map();
+      const edges = [];
+      const inDegree = new Map();
+      const outDegree = new Map();
+
+      for (const file of Object.keys(data)) {
+        const norm = normalize(file);
+        nodes.set(norm, { id: norm, label: norm });
+        inDegree.set(norm, 0);
+        outDegree.set(norm, 0);
+      }
+
+      for (const [source, targets] of Object.entries(data)) {
+        const src = normalize(source);
+        for (const rawTarget of targets) {
+          const tgt = normalize(rawTarget);
+          if (!nodes.has(tgt)) {
+            nodes.set(tgt, { id: tgt, label: tgt });
+            inDegree.set(tgt, 0);
+            outDegree.set(tgt, 0);
+          }
+          edges.push({ from: src, to: tgt });
+          inDegree.set(tgt, inDegree.get(tgt) + 1);
+          outDegree.set(src, outDegree.get(src) + 1);
+        }
+      }
+
+      const styledNodes = Array.from(nodes.values()).map(node => {
+        const id = node.id;
+        const hasIn = inDegree.get(id) > 0;
+        const hasOut = outDegree.get(id) > 0;
+
+        let color = "#8b5cf6"; // default
+        if (!hasIn && !hasOut) color = "#ef4444"; // unused
+        else if (!hasIn)       color = "#f97316"; // entry
+        else if (!hasOut)      color = "#eab308"; // leaf
+
+        return {
+          ...node,
+          color,
+          font: { color: "white" },
+          shape: "box"
+        };
+      });
+
+      const total = styledNodes.length;
+      const unused = styledNodes.filter(n => inDegree.get(n.id) === 0 && outDegree.get(n.id) === 0).length;
+      const entries = styledNodes.filter(n => inDegree.get(n.id) === 0 && outDegree.get(n.id) > 0).length;
+      const leaves  = styledNodes.filter(n => inDegree.get(n.id) > 0 && outDegree.get(n.id) === 0).length;
+
+      statsDiv.innerHTML = `
+        📊 Nodes: <strong>${total}</strong> | 
+        🔗 Edges: <strong>${edges.length}</strong> | 
+        🟥 Unused: <strong>${unused}</strong> | 
+        🟧 Entry Points: <strong>${entries}</strong> | 
+        🟨 Leaves: <strong>${leaves}</strong>
+      `;
+
+      progressText.textContent = `Nodes: ${total}, Edges: ${edges.length}... building layout`;
+
+      const container = document.getElementById("network");
+      container.innerHTML = "";
+
+      const network = new vis.Network(container, {
+        nodes: new vis.DataSet(styledNodes),
+        edges: new vis.DataSet(edges),
+      }, {
+        layout: { improvedLayout: false },
+        physics: {
+          stabilization: true
+        },
+        edges: {
+          arrows: "to",
+          color: { color: "#ccc" }
+        }
+      });
+
+      network.on("stabilizationProgress", (params) => {
+        const percent = Math.floor((params.iterations / params.total) * 100);
+        progressText.textContent = `Stabilizing... ${percent}%`;
+      });
+
+      network.once("stabilizationIterationsDone", () => {
+        overlay.style.display = "none";
+        console.log("✅ Done: Nodes:", total, "Edges:", edges.length);
+      });
+    }
+  </script>
+</body>
+</html>
