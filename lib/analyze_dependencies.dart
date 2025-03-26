@@ -36,11 +36,11 @@ void main() {
     }
   }
 
-  final outputFile = File('web/dependencies.json');
+  final outputFile = File('dependencies.json');
   outputFile.createSync(recursive: true);
   outputFile.writeAsStringSync(
     const JsonEncoder.withIndent('  ').convert(dependencyMap),
   );
 
-  print('✅ Dependencies written to web/dependencies.json');
+  print('✅ Dependencies written to dependencies.json');
 }
